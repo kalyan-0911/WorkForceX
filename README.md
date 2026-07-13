@@ -74,14 +74,26 @@ Predict workforce shortages and future workforce requirements using AI-driven an
 ```text
 WorkForceX
 │
-├── docs
-│   ├── presentations
-│   └── project-details
+├── backend                 # Django API & Data Processing
+│   ├── apps                # Modular Django Apps
+│   ├── config              # Project Settings
+│   └── requirements.txt
 │
-├── data
-│   ├── raw
-│   └── cleaned
+├── frontend                # React, TypeScript, Vite, Tailwind
+│   ├── src
+│   │   ├── components
+│   │   ├── pages
+│   │   ├── services
+│   │   └── ...
+│   ├── package.json
+│   └── tailwind.config.js
 │
+├── data                    # Datasets
+│   ├── raw                 # Original datasets
+│   ├── cleaned             # Processed for analysis
+│   └── processed           # Prepared for DB insertion
+│
+├── docs                    # Project Documentation
 └── README.md
 ```
 

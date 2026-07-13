@@ -1,22 +1,53 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import LoginPage from './pages/auth/LoginPage';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import DashboardLayout from './layouts/DashboardLayout';
+import DashboardPage from './pages/employer/DashboardPage';
+import PortalLayout from './layouts/PortalLayout';
+import PortalPage from './pages/professional/PortalPage';
+
+const RoleBasedRedirect = () => {
+  const { user } = useAuth();
+  if (user?.role === 'PROFESSIONAL') return <Navigate to="/portal" replace />;
+  if (user?.role === 'EMPLOYER' || user?.role === 'ADMIN') return <Navigate to="/dashboard" replace />;
+  return <Navigate to="/login" replace />;
+};
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-blue-600">WorkForceX</h1>
-          <p className="text-slate-500">AI-Powered Workforce Liquidity Platform</p>
-        </header>
-        
-        <main className="card bg-white rounded-2xl shadow-md p-6 border border-slate-200">
-          <Routes>
-            <Route path="/" element={<div className="text-center py-12"><h2 className="text-2xl font-semibold mb-4">Welcome to WorkForceX</h2><p>The platform is currently under construction.</p></div>} />
-            {/* Add more routes here */}
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            } 
+          >
+            <Route index element={<DashboardPage />} />
+          </Route>
+
+          <Route 
+            path="/portal" 
+            element={
+              <ProtectedRoute>
+                <PortalLayout />
+              </ProtectedRoute>
+            } 
+          >
+            <Route index element={<PortalPage />} />
+          </Route>
+          
+          <Route path="/" element={<RoleBasedRedirect />} />
+          <Route path="*" element={<RoleBasedRedirect />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
